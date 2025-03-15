@@ -3,25 +3,39 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 )
 
-// App struct
 type App struct {
 	ctx context.Context
+	db  *Database
 }
 
-// NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	return &App{db: NewDatabase()}
 }
 
-// startup is called when the app starts. The context is saved
-// so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-// Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+	return fmt.Sprintf("hello %s, it's show time!", name)
+}
+
+// API для работы с задачами
+func (a *App) AddTodo(title, priority string, dueDate *time.Time) Todo {
+	return a.db.AddTodo(title, priority, dueDate)
+}
+
+func (a *App) GetTodos(completed *bool) []map[string]interface{} {
+	return a.db.GetTodos(completed)
+}
+
+func (a *App) ToggleTodo(id uint) {
+	a.db.ToggleTodo(id)
+}
+
+func (a *App) DeleteTodo(id uint) {
+	a.db.DeleteTodo(id)
 }

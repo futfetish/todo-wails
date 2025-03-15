@@ -1,0 +1,103 @@
+package main
+
+import (
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"log"
+	"time"
+)
+
+type Todo struct {
+	ID        uint       `gorm:"primaryKey" json:"id"`
+	Title     string     `json:"title"`
+	Completed bool       `json:"completed"`
+	DueDate   *time.Time `json:"dueDate"`
+	Priority  int        `json:"priority"` // { 1 : 'low', 2: 'medium', : 3: 'high' }
+}
+
+var PRIORITY_ENUM = map[int]string{
+	1: "low",
+	2: "medium",
+	3: "high",
+}
+
+func priorityToString(priority int) string {
+	priorityMap := map[int]string{
+		1: "low",
+		2: "medium",
+		3: "high",
+	}
+	return priorityMap[priority] // если нет значения, вернёт ""
+}
+
+func priorityToNumber(priority string) int {
+	priorityMap := map[string]int{
+		"low":    1,
+		"medium": 2,
+		"high":   3,
+	}
+	return priorityMap[priority] // если нет значения, вернёт 0
+}
+
+type Database struct {
+	db *gorm.DB
+}
+
+func NewDatabase() *Database {
+	database := &Database{}
+	var err error
+	database.db, err = gorm.Open(sqlite.Open("todo.db"), &gorm.Config{})
+	if err != nil {
+		log.Fatal("не удалось подключиться к базе данных")
+	}
+	database.db.AutoMigrate(&Todo{})
+	return database
+}
+
+func (d *Database) AddTodo(title, priority string, dueDate *time.Time) Todo {
+	todo := Todo{
+		Title:     title,
+		Completed: false,
+		Priority:  priorityToNumber(priority),
+		DueDate:   dueDate,
+	}
+	d.db.Create(&todo)
+	return todo
+}
+
+func (d *Database) GetTodos(completed *bool) []map[string]interface{} {
+	var todos []Todo
+	query := d.db
+
+	// если передан completed, фильтруем по нему
+	if completed != nil {
+		query = query.Where("completed = ?", *completed)
+	}
+
+	query.Find(&todos)
+
+	// преобразуем список в формат с priority как строкой
+	var result []map[string]interface{}
+	for _, todo := range todos {
+		result = append(result, map[string]interface{}{
+			"id":        todo.ID,
+			"title":     todo.Title,
+			"completed": todo.Completed,
+			"dueDate":   todo.DueDate,
+			"priority":  priorityToString(todo.Priority), // конвертация числа в строку
+		})
+	}
+
+	return result
+}
+
+func (d *Database) ToggleTodo(id uint) {
+	var todo Todo
+	d.db.First(&todo, id)
+	todo.Completed = !todo.Completed
+	d.db.Save(&todo)
+}
+
+func (d *Database) DeleteTodo(id uint) {
+	d.db.Delete(&Todo{}, id)
+}
