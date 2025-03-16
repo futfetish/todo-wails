@@ -1,6 +1,7 @@
 import { FC, ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Styles from "../styles/nav.module.scss";
+import clsx from "clsx";
 
 export const Nav: FC = () => {
   return (
@@ -11,13 +12,13 @@ export const Nav: FC = () => {
   );
 };
 
-const But: FC<{ children: ReactNode } & React.ComponentProps<typeof Link>> = ({
+const But: FC<{ children: ReactNode } & React.ComponentProps<typeof NavLink>> = ({
   children,
   ...props
 }) => {
   return (
-    <Link className={Styles.but} {...props}>
+    <NavLink className={ ({isActive}) => clsx( Styles.but , isActive && Styles.butActive )} {...props}>
       {children}
-    </Link>
+    </NavLink>
   );
 };

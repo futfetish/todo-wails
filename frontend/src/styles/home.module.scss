@@ -1,0 +1,25 @@
+.content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  .block {
+    display: flex;
+    gap: 8px;
+    padding: 4px;
+  }
+
+  .but {
+    width: 100px;
+    padding: 4px;
+  }
+
+  .error{
+    color: red;
+  }
+}

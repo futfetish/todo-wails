@@ -1,0 +1,82 @@
+.list {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  .item {
+    border: solid 1px gray;
+    padding: 8px;
+    gap: 8px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    .content {
+        width: calc(100% - 30px);
+        gap: 8px;
+        border-radius: 8px;
+        text-overflow: ellipsis;
+        display: flex;
+      .completedBox {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border: solid 1px gray;
+        border-radius: 4px;
+      }
+
+      .completedBoxActive {
+        background: green;
+      }
+      .completed {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .titleActive {
+        text-decoration: line-through;
+      }
+    }
+
+    .deleteBut {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: solid 1px gray;
+      border-radius: 4px;
+      background-color: red;
+    }
+  }
+  .marking {
+    width: calc(100% - 30px);
+    display: flex;
+    // justify-content: space-between;
+    padding: 0 8px;
+    gap: 8px;
+  }
+  .completed {
+    width: 10%;
+    min-width: 80px;
+  }
+  .title {
+    width: 30%;
+  }
+  .priority{
+    width: 20px;
+    min-width: 80px;
+  }
+  .createdAt {
+    width: 20%;
+    min-width: 80px;
+  }
+  .timeToComplete {
+    width: 20%;
+    min-width: 80px;
+  }
+}
