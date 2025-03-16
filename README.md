@@ -1,19 +1,72 @@
-# README
+# todo list на Wails
 
-## About
+## Описание проекта
+Это десктопное приложение для управления списком задач (To-Do List), созданное с использованием Wails, Go и React.
 
-This is the official Wails React-TS template.
+## Основной функционал
+- **Создание задач**:
+  - Форма для создания задачи с названием, временем на выполнение и приоритетом.
+- **Отображение задач**:
+  - Основной список задач отображает все невыполненные задачи.
+  - Отдельная страница с выполненными задачами.
+- **Изменение статуса задачи**:
+  - Возможность отметить задачу как выполненную.
+  - Отмеченные задачи перемещаются в раздел выполненных задач.
+  - Можно отменить выполнение задачи.
+- **Удаление задач**:
+  - Возможность удалить задачу из списка.
+- **Сохранение состояния**:
+  - Данные хранятся в базе данных SQLite.
+  - Задачи сохраняются при перезапуске приложения.
 
-You can configure the project by editing `wails.json`. More information about the project settings can be found
-here: https://wails.io/docs/reference/project-config
+## Технологии
+### Бэкенд:
+- Wails
+- Go
+- SQLite для хранения данных
 
-## Live Development
+### Фронтенд:
+- React
+- TypeScript
+- React Hook Form (rhf) для работы с формами
+- SCSS для стилизации
+- clsx для работы с классами
+- Lucide React для иконок
 
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
+## Интерфейс
+### Главная страница:
+- Форма для создания новых задач.
+- Список текущих задач.
+- Кнопки удаления и переключения статуса выполнения.
 
-## Building
+### Страница выполненных задач:
+- Список только выполненных задач.
+- Возможность отменить выполнение.
+- Нет формы для создания задач.
 
-To build a redistributable, production mode package, use `wails build`.
+## Установка и запуск
+```sh
+# клонировать репозиторий
+git clone https://github.com/yourusername/todo-wails.git
+cd todo-wails
+
+# запуск приложения в dev
+wails dev
+```
+
+## Скриншоты
+### главная страница
+![главная страница](screenshots/1.png)
+### адаптивность до 480px в ширину
+![главная страница](screenshots/2.png)
+### как работает форма
+![главная страница](screenshots/3.png)
+### удаление
+![главная страница](screenshots/5.png)
+### страница выполненых задач
+![главная страница](screenshots/4.png)
+
+
+
+
+
