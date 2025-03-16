@@ -20,6 +20,7 @@ export const TodoList: FC<{
       </div>
       {todos.map((todo) => (
         <TodoItem
+          key={todo.id}
           deleteTodo={deleteTodo}
           toggleCompleted={toggleCompleted}
           todo={todo}

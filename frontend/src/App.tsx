@@ -1,5 +1,5 @@
 import "./styles/App.scss";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Route, HashRouter as Router, Routes } from "react-router-dom";
 import { Home } from "./pages/home";
 import { Nav } from "./components/nav";
 import { Completed } from "./pages/completed";

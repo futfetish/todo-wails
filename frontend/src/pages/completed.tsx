@@ -5,14 +5,19 @@ import { TodoList } from "../components/todoList";
 
 export const Completed: FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchTodos = async () => {
+      setIsLoading(true);
       const data = (await GetTodos(true)) as Todo[];
-      console.log(data);
-      if (data) {
-        setTodos(data);
+      if (!data) {
+        console.error("ошибка: данные пустые");
+        return;
       }
+      console.log(data);
+      setTodos(data);
+      setIsLoading(false);
     };
 
     fetchTodos();
@@ -31,11 +36,15 @@ export const Completed: FC = () => {
   return (
     <div>
       <h1>completed todos</h1>
-      <TodoList
-        deleteTodo={deleteTodo}
-        toggleCompleted={toggleCompleted}
-        todos={todos}
-      />
+      {isLoading && todos.length == 0 ? (
+        <h2> loading... </h2>
+      ) : (
+        <TodoList
+          deleteTodo={deleteTodo}
+          toggleCompleted={toggleCompleted}
+          todos={todos}
+        />
+      )}
     </div>
   );
 };

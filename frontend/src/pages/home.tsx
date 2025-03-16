@@ -3,18 +3,28 @@ import Styles from "../styles/home.module.scss";
 import { useForm } from "react-hook-form";
 import { priorityValues, Todo } from "../types/todo";
 import { TodoList } from "../components/todoList";
-import { AddTodo, DeleteTodo, GetTodos, ToggleTodo } from "../../wailsjs/go/main/App";
+import {
+  AddTodo,
+  DeleteTodo,
+  GetTodos,
+  ToggleTodo,
+} from "../../wailsjs/go/main/App";
 
 export const Home: FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchTodos = async () => {
+      setIsLoading(true)
       const data = (await GetTodos(null)) as Todo[];
-      console.log(data);
-      if (data) {
-        setTodos(data);
+      if (!data) {
+        console.error("ошибка: данные пустые");
+        return;
       }
+      console.log(data);
+      setTodos(data);
+      setIsLoading(false);
     };
 
     fetchTodos();
@@ -24,29 +34,33 @@ export const Home: FC = () => {
     setTodos((todos) => [...todos, todo]);
   };
 
-  const toggleCompleted = (id : number) => {
-    ToggleTodo(id)
+  const toggleCompleted = (id: number) => {
+    ToggleTodo(id);
     setTodos((prevTodos) =>
       prevTodos.map((todo) =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo
       )
     );
-  }
+  };
 
-  const deleteTodo = (id : number) => {
-    DeleteTodo(id)
-    setTodos((prevTodos) =>
-      prevTodos.filter((todo) =>
-        todo.id !== id
-      )
-    );
-  }
+  const deleteTodo = (id: number) => {
+    DeleteTodo(id);
+    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+  };
 
   return (
     <div className={Styles.content}>
       <h1>Todo List</h1>
       <ToDoForm addTodoToList={addTodoToList} />
-      <TodoList deleteTodo={deleteTodo} toggleCompleted={toggleCompleted} todos={todos} />
+      {isLoading && todos.length == 0 ? (
+        <h2> loading... </h2>
+      ) : (
+        <TodoList
+          deleteTodo={deleteTodo}
+          toggleCompleted={toggleCompleted}
+          todos={todos}
+        />
+      )}
     </div>
   );
 };

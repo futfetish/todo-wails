@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
@@ -105,7 +106,15 @@ func (d *Database) GetTodos(completed *bool) []map[string]interface{} {
 		query = query.Where("completed = ?", *completed)
 	}
 
-	query.Find(&todos)
+	if err := query.Find(&todos).Error; err != nil {
+		fmt.Println("ошибка при получении задач:", err)
+		return nil
+	}
+
+	// если задач нет, вернуть пустой массив, а не nil
+	if len(todos) == 0 {
+		return []map[string]interface{}{}
+	}
 
 	// преобразуем список в формат с priority как строкой
 	var result []map[string]interface{}
