@@ -23,7 +23,7 @@ func (a *App) Greet(name string) string {
 }
 
 // API для работы с задачами
-func (a *App) AddTodo(title, priority string, timeToComplete *int) Todo {
+func (a *App) AddTodo(title string, priority *string, timeToComplete *int) map[string]interface{} {
 	return a.db.AddTodo(title, priority, timeToComplete)
 }
 
