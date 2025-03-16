@@ -22,22 +22,36 @@ var PRIORITY_ENUM = map[int]string{
 	3: "high",
 }
 
-func priorityToString(priority int) string {
+func priorityToString(priority int) *string {
 	priorityMap := map[int]string{
 		1: "low",
 		2: "medium",
 		3: "high",
 	}
-	return priorityMap[priority] // если нет значения, вернёт ""
+
+	if value, ok := priorityMap[priority]; ok {
+		return &value
+	}
+
+	return nil
 }
 
-func priorityToNumber(priority string) int {
+func priorityToNumber(priority *string) int {
+	if priority == nil {
+		return 0
+	}
+
 	priorityMap := map[string]int{
 		"low":    1,
 		"medium": 2,
 		"high":   3,
 	}
-	return priorityMap[priority] // если нет значения, вернёт 0
+
+	if value, ok := priorityMap[*priority]; ok {
+		return value
+	}
+
+	return 0
 }
 
 type Database struct {
@@ -55,7 +69,7 @@ func NewDatabase() *Database {
 	return database
 }
 
-func (d *Database) AddTodo(title, priority string, timeToComplete *int) Todo {
+func (d *Database) AddTodo(title string, priority *string, timeToComplete *int) Todo {
 	todo := Todo{
 		Title:          title,
 		Completed:      false,

@@ -1,4 +1,4 @@
-export const priorityValues = ["", "low", "medium", "high"] as const;
+export const priorityValues = [null, "low", "medium", "high"] as const;
 
 export interface Todo {
   id: number;
