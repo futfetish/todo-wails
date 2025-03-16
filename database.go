@@ -82,10 +82,15 @@ func NewDatabase() *Database {
 
 func (d *Database) AddTodo(title string, priority *string, timeToComplete *int) map[string]interface{} {
 	todo := Todo{
-		Title:          title,
-		Completed:      false,
-		Priority:       priorityToNumber(priority),
-		TimeToComplete: timeToComplete,
+		Title:     title,
+		Completed: false,
+		Priority:  priorityToNumber(priority),
+		TimeToComplete: func() *int {
+			if timeToComplete != nil && *timeToComplete < 0 {
+				return nil
+			}
+			return timeToComplete
+		}(),
 	}
 	d.db.Create(&todo)
 	return formatTodo(todo)
