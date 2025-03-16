@@ -54,6 +54,17 @@ func priorityToNumber(priority *string) int {
 	return 0
 }
 
+func formatTodo(todo Todo) map[string]interface{} {
+	return map[string]interface{}{
+		"id":             todo.ID,
+		"title":          todo.Title,
+		"completed":      todo.Completed,
+		"createDate":     todo.CreateDate,
+		"timeToComplete": todo.TimeToComplete,
+		"priority":       priorityToString(todo.Priority), // конвертация числа в строку
+	}
+}
+
 type Database struct {
 	db *gorm.DB
 }
@@ -69,7 +80,7 @@ func NewDatabase() *Database {
 	return database
 }
 
-func (d *Database) AddTodo(title string, priority *string, timeToComplete *int) Todo {
+func (d *Database) AddTodo(title string, priority *string, timeToComplete *int) map[string]interface{} {
 	todo := Todo{
 		Title:          title,
 		Completed:      false,
@@ -77,7 +88,7 @@ func (d *Database) AddTodo(title string, priority *string, timeToComplete *int) 
 		TimeToComplete: timeToComplete,
 	}
 	d.db.Create(&todo)
-	return todo
+	return formatTodo(todo)
 }
 
 func (d *Database) GetTodos(completed *bool) []map[string]interface{} {
@@ -94,14 +105,7 @@ func (d *Database) GetTodos(completed *bool) []map[string]interface{} {
 	// преобразуем список в формат с priority как строкой
 	var result []map[string]interface{}
 	for _, todo := range todos {
-		result = append(result, map[string]interface{}{
-			"id":             todo.ID,
-			"title":          todo.Title,
-			"completed":      todo.Completed,
-			"createDate":     todo.CreateDate,
-			"timeToComplete": todo.TimeToComplete,
-			"priority":       priorityToString(todo.Priority), // конвертация числа в строку
-		})
+		result = append(result, formatTodo(todo))
 	}
 
 	return result
