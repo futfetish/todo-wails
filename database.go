@@ -8,11 +8,12 @@ import (
 )
 
 type Todo struct {
-	ID        uint       `gorm:"primaryKey" json:"id"`
-	Title     string     `json:"title"`
-	Completed bool       `json:"completed"`
-	DueDate   *time.Time `json:"dueDate"`
-	Priority  int        `json:"priority"` // { 1 : 'low', 2: 'medium', : 3: 'high' }
+	ID             uint      `gorm:"primaryKey" json:"id"`
+	Title          string    `json:"title"`
+	Completed      bool      `json:"completed"`
+	CreateDate     time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"createDate"`
+	TimeToComplete *int      `json:"timeToComplete"` // в часах (optional)
+	Priority       int       `json:"priority"`       // { 1 : 'low', 2: 'medium', : 3: 'high' }
 }
 
 var PRIORITY_ENUM = map[int]string{
@@ -54,12 +55,12 @@ func NewDatabase() *Database {
 	return database
 }
 
-func (d *Database) AddTodo(title, priority string, dueDate *time.Time) Todo {
+func (d *Database) AddTodo(title, priority string, timeToComplete *int) Todo {
 	todo := Todo{
-		Title:     title,
-		Completed: false,
-		Priority:  priorityToNumber(priority),
-		DueDate:   dueDate,
+		Title:          title,
+		Completed:      false,
+		Priority:       priorityToNumber(priority),
+		TimeToComplete: timeToComplete,
 	}
 	d.db.Create(&todo)
 	return todo
@@ -80,11 +81,12 @@ func (d *Database) GetTodos(completed *bool) []map[string]interface{} {
 	var result []map[string]interface{}
 	for _, todo := range todos {
 		result = append(result, map[string]interface{}{
-			"id":        todo.ID,
-			"title":     todo.Title,
-			"completed": todo.Completed,
-			"dueDate":   todo.DueDate,
-			"priority":  priorityToString(todo.Priority), // конвертация числа в строку
+			"id":             todo.ID,
+			"title":          todo.Title,
+			"completed":      todo.Completed,
+			"createDate":     todo.CreateDate,
+			"timeToComplete": todo.TimeToComplete,
+			"priority":       priorityToString(todo.Priority), // конвертация числа в строку
 		})
 	}
 

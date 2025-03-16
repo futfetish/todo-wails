@@ -4,7 +4,9 @@ export namespace main {
 	    id: number;
 	    title: string;
 	    completed: boolean;
-	    dueDate?: time.Time;
+	    // Go type: time
+	    createDate: any;
+	    timeToComplete?: number;
 	    priority: number;
 	
 	    static createFrom(source: any = {}) {
@@ -16,7 +18,8 @@ export namespace main {
 	        this.id = source["id"];
 	        this.title = source["title"];
 	        this.completed = source["completed"];
-	        this.dueDate = this.convertValues(source["dueDate"], time.Time);
+	        this.createDate = this.convertValues(source["createDate"], null);
+	        this.timeToComplete = source["timeToComplete"];
 	        this.priority = source["priority"];
 	    }
 	
@@ -37,23 +40,6 @@ export namespace main {
 		    }
 		    return a;
 		}
-	}
-
-}
-
-export namespace time {
-	
-	export class Time {
-	
-	
-	    static createFrom(source: any = {}) {
-	        return new Time(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	
-	    }
 	}
 
 }

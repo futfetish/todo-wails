@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"time"
 )
 
 type App struct {
@@ -24,8 +23,8 @@ func (a *App) Greet(name string) string {
 }
 
 // API для работы с задачами
-func (a *App) AddTodo(title, priority string, dueDate *time.Time) Todo {
-	return a.db.AddTodo(title, priority, dueDate)
+func (a *App) AddTodo(title, priority string, timeToComplete *int) Todo {
+	return a.db.AddTodo(title, priority, timeToComplete)
 }
 
 func (a *App) GetTodos(completed *bool) []map[string]interface{} {
