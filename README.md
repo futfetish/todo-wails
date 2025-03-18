@@ -50,6 +50,10 @@
 git clone https://github.com/yourusername/todo-wails.git
 cd todo-wails
 
+# включить CGO (обязательно для работы sqlite)
+export CGO_ENABLED=1  # для Linux/Mac
+set CGO_ENABLED=1     # для Windows (cmd)
+
 # запуск приложения в dev
 wails dev
 ```
