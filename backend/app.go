@@ -8,13 +8,12 @@ import (
 
 type App struct {
 	ctx context.Context
-	db  *database.Database
+	db  database.TodoRepository
 }
 
-func NewApp() *App {
-	return &App{db: database.NewDatabase()}
+func NewApp(db database.TodoRepository) *App {
+	return &App{db: db}
 }
-
 func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
 }

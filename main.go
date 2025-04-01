@@ -5,15 +5,41 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"os"
 	"todo/backend"
+	"todo/backend/database"
+	"todo/backend/database/repositories"
 )
 
 //go:embed all:frontend/dist
 var assets embed.FS
 
+func GetApp() *backend.App {
+	// функция создания app в соответсвии с DATABASE_TYPE
+	dbType := os.Getenv("DATABASE_TYPE")
+	if dbType == "" {
+		// Если переменная DATABASE_TYPE не установлена, используем по умолчанию sqlite
+		dbType = "sqlite"
+	}
+
+	var db database.TodoRepository
+	switch dbType {
+	case "sqlite":
+		db = sqlite.NewDatabase()
+	case "json":
+		//
+	default:
+		db = sqlite.NewDatabase() // по умолчанию используем sqlite
+	}
+
+	// Создаем и возвращаем экземпляр приложения с выбранной базой данных
+	return backend.NewApp(db)
+}
+
 func main() {
 	// Create an instance of the app structure
-	app := backend.NewApp()
+
+	app := GetApp()
 
 	// Create application with options
 	err := wails.Run(&options.App{
