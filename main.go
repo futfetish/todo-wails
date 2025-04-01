@@ -2,13 +2,16 @@ package main
 
 import (
 	"embed"
+	"fmt"
+	"github.com/joho/godotenv"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"os"
 	"todo/backend"
 	"todo/backend/database"
-	"todo/backend/database/repositories"
+	"todo/backend/database/repositories/jsondb"
+	"todo/backend/database/repositories/sqlite"
 )
 
 //go:embed all:frontend/dist
@@ -16,7 +19,13 @@ var assets embed.FS
 
 func GetApp() *backend.App {
 	// функция создания app в соответсвии с DATABASE_TYPE
+
+	godotenv.Load()
+
 	dbType := os.Getenv("DATABASE_TYPE")
+
+	fmt.Println("DATABASE_TYPE =", dbType)
+
 	if dbType == "" {
 		// Если переменная DATABASE_TYPE не установлена, используем по умолчанию sqlite
 		dbType = "sqlite"
@@ -27,7 +36,7 @@ func GetApp() *backend.App {
 	case "sqlite":
 		db = sqlite.NewDatabase()
 	case "json":
-		//
+		db = jsondb.NewDatabase()
 	default:
 		db = sqlite.NewDatabase() // по умолчанию используем sqlite
 	}
