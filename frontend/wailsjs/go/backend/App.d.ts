@@ -10,3 +10,5 @@ export function GetTodos(arg1:any):Promise<Array<Record<string, any>>>;
 export function Greet(arg1:string):Promise<string>;
 
 export function ToggleTodo(arg1:number):Promise<void>;
+
+export function UpdateTodo(arg1:number,arg2:string,arg3:any,arg4:any):Promise<Record<string, any>>;

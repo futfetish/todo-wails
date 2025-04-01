@@ -38,3 +38,7 @@ func (a *App) ToggleTodo(id uint) {
 func (a *App) DeleteTodo(id uint) {
 	a.db.DeleteTodo(id)
 }
+
+func (a *App) UpdateTodo(id uint, title string, priority *string, timeToComplete *int) (map[string]interface{}, error) {
+	return a.db.UpdateTodo(id, title, priority, timeToComplete)
+}

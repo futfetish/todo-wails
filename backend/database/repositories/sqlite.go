@@ -77,3 +77,32 @@ func (d *Database) ToggleTodo(id uint) {
 func (d *Database) DeleteTodo(id uint) {
 	d.db.Delete(&database.Todo{}, id)
 }
+
+func (d *Database) UpdateTodo(id uint, title string, priority *string, timeToComplete *int) (map[string]interface{}, error) {
+	// Находим задачу по ID
+	var todo database.Todo
+	if err := d.db.First(&todo, id).Error; err != nil {
+		// Если задача не найдена, возвращаем ошибку
+		return nil, fmt.Errorf("задача с id %d не найдена", id)
+	}
+
+	// Обновляем поля задачи, если они не равны nil
+
+	todo.Title = title
+
+	if priority != nil {
+		todo.Priority = database.PriorityToNumber(priority)
+	}
+	if timeToComplete != nil && *timeToComplete >= 0 {
+		todo.TimeToComplete = timeToComplete
+	}
+
+	// Сохраняем обновленную задачу
+	if err := d.db.Save(&todo).Error; err != nil {
+		log.Println("Ошибка при обновлении задачи:", err)
+		return nil, err
+	}
+
+	// Возвращаем обновленную задачу в формате map
+	return database.FormatTodo(todo), nil
+}

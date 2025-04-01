@@ -21,3 +21,7 @@ export function Greet(arg1) {
 export function ToggleTodo(arg1) {
   return window['go']['backend']['App']['ToggleTodo'](arg1);
 }
+
+export function UpdateTodo(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['UpdateTodo'](arg1, arg2, arg3, arg4);
+}
