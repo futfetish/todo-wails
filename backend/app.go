@@ -1,20 +1,21 @@
-package main
+package backend
 
 import (
 	"context"
 	"fmt"
+	"todo/backend/database"
 )
 
 type App struct {
 	ctx context.Context
-	db  *Database
+	db  *database.Database
 }
 
 func NewApp() *App {
-	return &App{db: NewDatabase()}
+	return &App{db: database.NewDatabase()}
 }
 
-func (a *App) startup(ctx context.Context) {
+func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
 }
 

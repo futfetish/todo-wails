@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { DeleteTodo, GetTodos, ToggleTodo } from "../../wailsjs/go/main/App";
+import { DeleteTodo, GetTodos, ToggleTodo } from "../../wailsjs/go/backend/App";
 import { Todo } from "../types/todo";
 import { TodoList } from "../components/todoList";
 

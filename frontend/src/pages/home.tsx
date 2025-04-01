@@ -8,7 +8,7 @@ import {
   DeleteTodo,
   GetTodos,
   ToggleTodo,
-} from "../../wailsjs/go/main/App";
+} from "../../wailsjs/go/backend/App";
 
 export const Home: FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
