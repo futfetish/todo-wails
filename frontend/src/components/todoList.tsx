@@ -34,16 +34,17 @@ const timeToComplete = (todo: Todo) => {
   if (!todo.timeToComplete) {
     return "unlim";
   }
+
   const createDate = new Date(todo.createDate);
-  const deadline = new Date(
-    createDate.getTime() + todo.timeToComplete * 60 * 60 * 1000
-  );
+  const deadline = new Date(createDate.getTime() + todo.timeToComplete * 60 * 60 * 1000);
   const remainingTime = deadline.getTime() - Date.now();
 
-  const hours = Math.floor(remainingTime / (1000 * 60 * 60));
-  const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+  const hours = Math.floor(Math.abs(remainingTime) / (1000 * 60 * 60));
+  const minutes = Math.floor((Math.abs(remainingTime) % (1000 * 60 * 60)) / (1000 * 60));
 
-  return `${hours}h ${minutes}m`;
+  return remainingTime >= 0 
+    ? `${hours}h ${minutes}m`
+    : `overdue by: ${hours}h ${minutes}m`;
 };
 
 const convertTime = (time: string) => {
@@ -91,7 +92,7 @@ const TodoItem: FC<{
           {todo.priority ? todo.priority : "none"}
         </div>
         <div className={Styles.createdAt}> {convertTime(todo.createDate)}</div>
-        <div className={Styles.timeToComplete}>{timeToComplete(todo)}</div>
+        <div className={Styles.timeToComplete}>{ todo.completed ? 'completed' : timeToComplete(todo)}</div>
       </div>
 
       <div
