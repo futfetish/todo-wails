@@ -225,7 +225,7 @@ const TodoItem: FC<{
             padding: "20px",
             width: "400px",
             background: "#404040",
-            height: "200px",
+            height: "250px",
             margin: "auto",
           },
         }}
@@ -233,6 +233,7 @@ const TodoItem: FC<{
         onRequestClose={() => setEditModalOpen(false)}
         contentLabel="123"
       >
+        <h1> edit {todo.title} </h1>
         <form onSubmit={handleSubmit(onSubmit)} className={Styles.form}>
           <div className={Styles.block}>
             <label>title</label>
