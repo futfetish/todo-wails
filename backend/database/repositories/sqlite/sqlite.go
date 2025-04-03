@@ -86,7 +86,7 @@ func (d *Database) UpdateTodo(id uint, title string, priority *string, timeToCom
 		// Если задача не найдена, возвращаем ошибку
 		return nil, fmt.Errorf("задача с id %d не найдена", id)
 	}
-	todo.CreateDate = time.Now()
+
 	// Обновляем поля задачи, если они не равны nil
 	todo.Title = title
 
@@ -95,7 +95,7 @@ func (d *Database) UpdateTodo(id uint, title string, priority *string, timeToCom
 	}
 	if timeToComplete != nil && *timeToComplete >= 0 {
 		todo.TimeToComplete = timeToComplete
-
+		todo.CreateDate = time.Now()
 	}
 
 	// Сохраняем обновленную задачу

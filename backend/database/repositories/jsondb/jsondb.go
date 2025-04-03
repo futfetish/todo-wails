@@ -187,6 +187,7 @@ func (d *Database) UpdateTodo(id uint, title string, priority *string, timeToCom
 			}
 			if timeToComplete != nil {
 				todo.TimeToComplete = timeToComplete
+				todo.CreateDate = time.Now()
 			}
 
 			todos[i] = todo
