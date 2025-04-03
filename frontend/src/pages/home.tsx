@@ -9,6 +9,7 @@ import {
   GetTodos,
   ToggleTodo,
 } from "../../wailsjs/go/backend/App";
+import Modal from "react-modal";
 
 export const Home: FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -16,7 +17,7 @@ export const Home: FC = () => {
 
   useEffect(() => {
     const fetchTodos = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       const data = (await GetTodos(null)) as Todo[];
       if (!data) {
         console.error("ошибка: данные пустые");
@@ -81,6 +82,8 @@ const ToDoForm: FC<{ addTodoToList: (todos: Todo) => void }> = ({
     reset,
   } = useForm<FormData>();
 
+  const [modalOpen, setModalOpen] = useState(false);
+
   const onSubmit = (data: FormData) => {
     console.log(data);
     reset();
@@ -98,44 +101,72 @@ const ToDoForm: FC<{ addTodoToList: (todos: Todo) => void }> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={Styles.form}>
-      <div className={Styles.block}>
-        <label>title</label>
-        <input
-          {...register("title", {
-            required: "title is required",
-            validate: (value) =>
-              value.trim() !== "" || "title cannot be empty or spaces only",
-          })}
-        />
-        {errors.title && <p className={Styles.error}>{errors.title.message}</p>}
-      </div>
-
-      <div className={Styles.block}>
-        <label>time to complete in hours (optional)</label>
-        <input type="number" {...register("timeToComplete")} />
-        {errors.timeToComplete && (
-          <p className={Styles.error}>{errors.timeToComplete.message}</p>
-        )}
-      </div>
-
-      <div className={Styles.block}>
-        <label>priority (optional)</label>
-        <select {...register("priority")}>
-          {priorityValues.map((status) => (
-            <option key={status} value={status === null ? "" : status}>
-              {status === null ? "not selected" : status}
-            </option>
-          ))}
-        </select>
-        {errors.priority && (
-          <p className={Styles.error}>{errors.priority.message}</p>
-        )}
-      </div>
-
-      <button className={Styles.but} type="submit">
-        add
+    <div>
+      <button className={Styles.modalbut} onClick={() => setModalOpen(true)}>
+        {" "}
+        create todo{" "}
       </button>
-    </form>
+      <Modal
+        style={{
+          overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
+          content: {
+            padding: "20px",
+            width: "600px",
+            background: "#404040",
+            height: "300px",
+            margin: "auto",
+          },
+        }}
+        isOpen={modalOpen}
+        onRequestClose={() => setModalOpen(false)}
+      >
+        <h1>create todo</h1>
+        <form onSubmit={handleSubmit(onSubmit)} className={Styles.form}>
+          <div className={Styles.block}>
+            <label>title</label>
+            <input
+              {...register("title", {
+                required: "title is required",
+                validate: (value) =>
+                  value.trim() !== "" || "title cannot be empty or spaces only",
+              })}
+            />
+            {errors.title && (
+              <p className={Styles.error}>{errors.title.message}</p>
+            )}
+          </div>
+
+          <div className={Styles.block}>
+            <label>time to complete in hours (optional)</label>
+            <input type="number" {...register("timeToComplete")} />
+            {errors.timeToComplete && (
+              <p className={Styles.error}>{errors.timeToComplete.message}</p>
+            )}
+          </div>
+
+          <div className={Styles.block}>
+            <label>priority (optional)</label>
+            <select {...register("priority")}>
+              {priorityValues.map((status) => (
+                <option key={status} value={status === null ? "" : status}>
+                  {status === null ? "not selected" : status}
+                </option>
+              ))}
+            </select>
+            {errors.priority && (
+              <p className={Styles.error}>{errors.priority.message}</p>
+            )}
+          </div>
+          <div className={Styles.buttons}>
+            <button className={Styles.but} type="submit">
+              add
+            </button>
+            <button className={Styles.but} onClick={() => setModalOpen(false)}>
+              cancel
+            </button>
+          </div>
+        </form>
+      </Modal>
+    </div>
   );
 };
