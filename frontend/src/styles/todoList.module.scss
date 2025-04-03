@@ -11,11 +11,11 @@
     display: flex;
     justify-content: space-between;
     .content {
-        width: calc(100% - 30px);
-        gap: 8px;
-        border-radius: 8px;
-        text-overflow: ellipsis;
-        display: flex;
+      width: calc(100% - 30px);
+      gap: 8px;
+      border-radius: 8px;
+      text-overflow: ellipsis;
+      display: flex;
       .completedBox {
         cursor: pointer;
         display: flex;
@@ -67,7 +67,7 @@
   .title {
     width: 30%;
   }
-  .priority{
+  .priority {
     width: 20px;
     min-width: 80px;
   }

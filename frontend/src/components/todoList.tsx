@@ -1,8 +1,9 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Todo } from "../types/todo";
 import Styles from "../styles/todoList.module.scss";
 import { Check, XIcon } from "lucide-react";
 import clsx from "clsx";
+import Modal from "react-modal";
 
 export const TodoList: FC<{
   todos: Todo[];
@@ -36,13 +37,17 @@ const timeToComplete = (todo: Todo) => {
   }
 
   const createDate = new Date(todo.createDate);
-  const deadline = new Date(createDate.getTime() + todo.timeToComplete * 60 * 60 * 1000);
+  const deadline = new Date(
+    createDate.getTime() + todo.timeToComplete * 60 * 60 * 1000
+  );
   const remainingTime = deadline.getTime() - Date.now();
 
   const hours = Math.floor(Math.abs(remainingTime) / (1000 * 60 * 60));
-  const minutes = Math.floor((Math.abs(remainingTime) % (1000 * 60 * 60)) / (1000 * 60));
+  const minutes = Math.floor(
+    (Math.abs(remainingTime) % (1000 * 60 * 60)) / (1000 * 60)
+  );
 
-  return remainingTime >= 0 
+  return remainingTime >= 0
     ? `${hours}h ${minutes}m`
     : `overdue by: ${hours}h ${minutes}m`;
 };
@@ -69,6 +74,8 @@ const TodoItem: FC<{
   toggleCompleted: (id: number) => void;
   deleteTodo: (id: number) => void;
 }> = ({ todo, toggleCompleted, deleteTodo }) => {
+  const [deleteModal, setDeleteModal] = useState(false);
+
   return (
     <div className={Styles.item}>
       <div className={Styles.content}>
@@ -92,19 +99,59 @@ const TodoItem: FC<{
           {todo.priority ? todo.priority : "none"}
         </div>
         <div className={Styles.createdAt}> {convertTime(todo.createDate)}</div>
-        <div className={Styles.timeToComplete}>{ todo.completed ? 'completed' : timeToComplete(todo)}</div>
+        <div className={Styles.timeToComplete}>
+          {todo.completed ? "completed" : timeToComplete(todo)}
+        </div>
       </div>
 
-      <div
-        onClick={() => {
-          if (confirm(`хотите удалить ${todo.title}?`)) {
-            deleteTodo(todo.id);
-          }
-        }}
-        className={Styles.deleteBut}
-      >
+      <div onClick={() => setDeleteModal(true)} className={Styles.deleteBut}>
         <XIcon />
       </div>
+
+      <Modal
+        style={{
+          overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
+          content: {
+            padding: "20px",
+            width: "400px",
+            background: "#404040",
+            height: "200px",
+            margin: "auto",
+          },
+        }}
+        isOpen={deleteModal}
+        onRequestClose={() => setDeleteModal(false)}
+        contentLabel="123"
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            height: "100%",
+          }}
+        >
+          <h2> do you want to delete {todo.title} ? </h2>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              padding: "0  20px",
+            }}
+          >
+            <button style={{ padding: "4px", margin: "10px", fontSize: '20px', cursor: 'pointer' }} 
+              onClick={() => {
+                deleteTodo(todo.id)
+              }}
+            > yes </button>
+            <button
+            onClick={() => {
+              setDeleteModal(false)
+            }}
+            style={{ padding: "4px", margin: "10px", fontSize: '20px', cursor: 'pointer' }}> cancel </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
