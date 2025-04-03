@@ -223,9 +223,9 @@ const TodoItem: FC<{
           overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
           content: {
             padding: "20px",
-            width: "400px",
+            width: "500px",
             background: "#404040",
-            height: "250px",
+            height: "350px",
             margin: "auto",
           },
         }}

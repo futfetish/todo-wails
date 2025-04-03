@@ -92,3 +92,29 @@
     min-width: 80px;
   }
 }
+
+.form {
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+  .block {
+    display: flex;
+    gap: 8px;
+    padding: 4px;
+  }
+  .buttons {
+    justify-content: space-between;
+    padding-top: 10px;
+    display: flex;
+    gap: 40px;
+    .but {
+      font-size: 18px;
+      width: 100px;
+      padding: 4px;
+    }
+  }
+
+  .error {
+    color: red;
+  }
+}
