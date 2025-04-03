@@ -11,6 +11,9 @@ import {
 } from "../../wailsjs/go/backend/App";
 import Modal from "react-modal";
 
+
+Modal.setAppElement('#root');
+
 export const Home: FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [isLoading, setIsLoading] = useState(true);

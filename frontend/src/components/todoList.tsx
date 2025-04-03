@@ -7,6 +7,8 @@ import Modal from "react-modal";
 import { useForm } from "react-hook-form";
 import { UpdateTodo } from "../../wailsjs/go/backend/App";
 
+Modal.setAppElement('#root');
+
 export const TodoList: FC<{
   todos: Todo[];
   toggleCompleted: (id: number) => void;
