@@ -52,6 +52,18 @@
       border-radius: 4px;
       background-color: red;
     }
+
+    .editBut {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: solid 1px gray;
+      border-radius: 4px;
+      background-color: blue;
+    }
   }
   .marking {
     width: calc(100% - 30px);

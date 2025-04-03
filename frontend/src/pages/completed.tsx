@@ -33,6 +33,12 @@ export const Completed: FC = () => {
     setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
   };
 
+  const onEdit = (todo: Todo) => {
+    setTodos((prevTodos) =>
+      prevTodos.map((item) => (item.id === todo.id ? todo : item))
+    );
+  };
+
   return (
     <div>
       <h1>completed todos</h1>
@@ -40,6 +46,7 @@ export const Completed: FC = () => {
         <h2> loading... </h2>
       ) : (
         <TodoList
+          onEdit={onEdit}
           deleteTodo={deleteTodo}
           toggleCompleted={toggleCompleted}
           todos={todos}

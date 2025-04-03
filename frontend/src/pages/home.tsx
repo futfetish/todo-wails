@@ -49,6 +49,10 @@ export const Home: FC = () => {
     setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
   };
 
+  const onEdit = (todo : Todo) => {
+    setTodos((prevTodos) => prevTodos.map((item) => item.id === todo.id ? todo : item ))
+  }
+
   return (
     <div className={Styles.content}>
       <h1>Todo List</h1>
@@ -57,6 +61,7 @@ export const Home: FC = () => {
         <h2> loading... </h2>
       ) : (
         <TodoList
+        onEdit={onEdit}
           deleteTodo={deleteTodo}
           toggleCompleted={toggleCompleted}
           todos={todos}
@@ -98,6 +103,7 @@ const ToDoForm: FC<{ addTodoToList: (todos: Todo) => void }> = ({
     AddTodo(data.title.trim(), priority, timeToComplete).then((data) =>
       addTodoToList(data as Todo)
     );
+    setModalOpen(false)
   };
 
   return (

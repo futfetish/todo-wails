@@ -1,15 +1,19 @@
 import { FC, useState } from "react";
-import { Todo } from "../types/todo";
+import { priorityValues, Todo } from "../types/todo";
 import Styles from "../styles/todoList.module.scss";
-import { Check, XIcon } from "lucide-react";
+import { Check, Pencil, XIcon } from "lucide-react";
 import clsx from "clsx";
 import Modal from "react-modal";
+import { useForm } from "react-hook-form";
+import { UpdateTodo } from "../../wailsjs/go/backend/App";
 
 export const TodoList: FC<{
   todos: Todo[];
   toggleCompleted: (id: number) => void;
   deleteTodo: (id: number) => void;
-}> = ({ todos, toggleCompleted, deleteTodo }) => {
+  onEdit: (todo : Todo) => void
+}> = ({ todos, toggleCompleted, deleteTodo, onEdit }) => {
+
   return (
     <div className={Styles.list}>
       <div className={Styles.marking}>
@@ -21,6 +25,7 @@ export const TodoList: FC<{
       </div>
       {todos.map((todo) => (
         <TodoItem
+        onEdit={onEdit}
           key={todo.id}
           deleteTodo={deleteTodo}
           toggleCompleted={toggleCompleted}
@@ -69,12 +74,47 @@ const convertTime = (time: string) => {
   return `${day}.${month}.${year} ${hours}:${minutes}`;
 };
 
+interface FormData {
+  title: Todo["title"];
+  timeToComplete: string;
+  priority: NonNullable<Todo["priority"]> | "";
+}
+
 const TodoItem: FC<{
   todo: Todo;
   toggleCompleted: (id: number) => void;
+  onEdit: (todo: Todo) => void;
   deleteTodo: (id: number) => void;
-}> = ({ todo, toggleCompleted, deleteTodo }) => {
-  const [deleteModal, setDeleteModal] = useState(false);
+}> = ({ todo, toggleCompleted, deleteTodo, onEdit }) => {
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>({
+    defaultValues: {
+      title: todo.title, 
+      priority: todo.priority ? todo.priority : '',
+    }
+  });
+
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+    reset();
+
+    const timeToComplete =
+      data.timeToComplete.trim() === "" || isNaN(parseInt(data.timeToComplete))
+        ? null
+        : parseInt(data.timeToComplete);
+
+    const priority = data.priority === "" ? null : data.priority;
+
+    UpdateTodo(todo.id, data.title.trim(), priority, timeToComplete).then((data) => onEdit(data as Todo));
+    setEditModalOpen(false)
+  };
 
   return (
     <div className={Styles.item}>
@@ -104,7 +144,14 @@ const TodoItem: FC<{
         </div>
       </div>
 
-      <div onClick={() => setDeleteModal(true)} className={Styles.deleteBut}>
+      <div onClick={() => setEditModalOpen(true)} className={Styles.editBut}>
+        <Pencil size={16} />
+      </div>
+
+      <div
+        onClick={() => setDeleteModalOpen(true)}
+        className={Styles.deleteBut}
+      >
         <XIcon />
       </div>
 
@@ -119,8 +166,8 @@ const TodoItem: FC<{
             margin: "auto",
           },
         }}
-        isOpen={deleteModal}
-        onRequestClose={() => setDeleteModal(false)}
+        isOpen={deleteModalOpen}
+        onRequestClose={() => setDeleteModalOpen(false)}
         contentLabel="123"
       >
         <div
@@ -139,18 +186,96 @@ const TodoItem: FC<{
               padding: "0  20px",
             }}
           >
-            <button style={{ padding: "4px", margin: "10px", fontSize: '20px', cursor: 'pointer' }} 
-              onClick={() => {
-                deleteTodo(todo.id)
-              }}
-            > yes </button>
             <button
-            onClick={() => {
-              setDeleteModal(false)
-            }}
-            style={{ padding: "4px", margin: "10px", fontSize: '20px', cursor: 'pointer' }}> cancel </button>
+              style={{
+                padding: "4px",
+                margin: "10px",
+                fontSize: "20px",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                deleteTodo(todo.id);
+              }}
+            >
+              yes
+            </button>
+            <button
+              onClick={() => {
+                setDeleteModalOpen(false);
+              }}
+              style={{
+                padding: "4px",
+                margin: "10px",
+                fontSize: "20px",
+                cursor: "pointer",
+              }}
+            >
+              cancel
+            </button>
           </div>
         </div>
+      </Modal>
+
+      <Modal
+        style={{
+          overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
+          content: {
+            padding: "20px",
+            width: "400px",
+            background: "#404040",
+            height: "200px",
+            margin: "auto",
+          },
+        }}
+        isOpen={editModalOpen}
+        onRequestClose={() => setEditModalOpen(false)}
+        contentLabel="123"
+      >
+        <form onSubmit={handleSubmit(onSubmit)} className={Styles.form}>
+          <div className={Styles.block}>
+            <label>title</label>
+            <input
+              {...register("title", {
+                required: "title is required",
+                validate: (value) =>
+                  value.trim() !== "" || "title cannot be empty or spaces only",
+              })}
+            />
+            {errors.title && (
+              <p className={Styles.error}>{errors.title.message}</p>
+            )}
+          </div>
+
+          <div className={Styles.block}>
+            <label>time to complete in hours (optional)</label>
+            <input type="number" {...register("timeToComplete")} />
+            {errors.timeToComplete && (
+              <p className={Styles.error}>{errors.timeToComplete.message}</p>
+            )}
+          </div>
+
+          <div className={Styles.block}>
+            <label>priority (optional)</label>
+            <select {...register("priority")}>
+              {priorityValues.map((status) => (
+                <option key={status} value={status === null ? "" : status}>
+                  {status === null ? "not selected" : status}
+                </option>
+              ))}
+            </select>
+            {errors.priority && (
+              <p className={Styles.error}>{errors.priority.message}</p>
+            )}
+          </div>
+          <div className={Styles.buttons}>
+            <button className={Styles.but} type="submit">
+              add
+            </button>
+            <button className={Styles.but} onClick={() => setEditModalOpen(false)}>
+              cancel
+            </button>
+          </div>
+        </form>
       </Modal>
     </div>
   );
